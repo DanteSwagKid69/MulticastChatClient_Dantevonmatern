@@ -1,4 +1,8 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.foreign.MemoryLayout;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 public class Main {
@@ -13,5 +17,23 @@ public class Main {
         // Create a MultitaskSocket
         MulticastSocket chatMultitaskSocket = new MulticastSocket(portnumber);
 
+        // Determine the ip adress of a host, given the host name
+        InetAddress group = InetAddress.getByName("225.4.5.6");
+
+        // Joins a multitask group
+        chatMultitaskSocket.joinGroup(group);
+
+        // Prompt a user to enter a message
+        String msg = "";
+        System.out.println("Type a message for the server:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        msg = br.readLine();
+
+        // Send the message to multitask adress
+        DatagramPacket data = new DatagramPacket(msg.getBytes(), 0, msg.length(), group, portnumber);
+        chatMultitaskSocket.send(data);
+
+        // Close the socket
+        chatMultitaskSocket.close();
     }
 }
